@@ -10,12 +10,12 @@ export default defineConfig({
   markdown: {
     remarkPlugins: [remarkGithubAlerts],
   },
-  site: 'https://hakimifr.github.io',
+  site: 'https://realme-mt6785-devs.github.io',
   base: '/RM6785-docs',
   integrations: [
     starlight({
       title: 'RM6785 Docs',
-      social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/hakimifr/RM6785-docs' }],
+      social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/realme-mt6785-devs/realme-mt6785-devs.github.io' }],
       favicon: '/favicon.jpg',
       customCss: ['./src/styles/custom.css'],
       sidebar: [
