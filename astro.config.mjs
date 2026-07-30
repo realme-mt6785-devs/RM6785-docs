@@ -1,15 +1,9 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import remarkGithubAlerts from 'remark-github-alerts';
-import "remark-github-alerts/styles/github-colors-light.css";
-import "remark-github-alerts/styles/github-colors-dark-class.css";
 
 // https://astro.build/config
 export default defineConfig({
-  markdown: {
-    remarkPlugins: [remarkGithubAlerts],
-  },
   site: 'https://realme-mt6785-devs.github.io',
   base: '/RM6785-docs',
   integrations: [
@@ -28,15 +22,15 @@ export default defineConfig({
         },
         {
           label: 'Guides',
-          autogenerate: { directory: 'guides' },
+          items: [{ autogenerate: { directory: 'guides' } }],
         },
         {
           label: 'Troubleshooting',
-          autogenerate: { directory: 'troubleshooting' },
+          items: [{ autogenerate: { directory: 'troubleshooting' } }],
         },
         {
           label: 'Appendix',
-          autogenerate: { directory: 'appendix' },
+          items: [{ autogenerate: { directory: 'appendix' } }],
         },
       ],
     }),

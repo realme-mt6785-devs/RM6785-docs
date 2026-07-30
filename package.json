@@ -10,10 +10,9 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.38.1",
+    "@astrojs/starlight": "0.41.5",
     "@fontsource/noto-serif-grantha": "^5.2.6",
-    "astro": "^6.0.1",
-    "remark-github-alerts": "^0.1.1",
+    "astro": "7.1.6",
     "sharp": "^0.34.2"
   }
 }
