@@ -1,0 +1,55 @@
+---
+title: How to Check What's Taking Your Storage Using Only Termux
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+## Requirements
+
+Termux. That's it. We will be using `dua` package
+(basically a nicer `du`).
+
+## One-time Termux Setup
+
+You only need to run this once, provided you don't
+uninstall Termux. If you do, you need to redo this
+section.
+
+```bash
+pkg upgrade -y && pkg install dua tsu -y
+```
+
+<Aside type="note">
+You can also use nala if you wish.
+</Aside>
+
+## Checking What's taking Your Space
+
+- Internal Storage:
+
+```bash
+sudo dua i /sdcard/
+```
+
+- Apps:
+
+<Aside type="caution">
+This one needs more test on Android 16, please
+report your output to hakimi.
+</Aside>
+
+```bash
+sudo dua i /data/data/
+```
+
+<Aside type="tip">
+To quit the `dua` interface, press 'q' twice.
+</Aside>
+
+<Aside type="caution">
+Unless you're familiar with cli stuff, do not
+do anything stupid with dua or you might
+accidentally delete important files. With that
+said, it's actually not hard to use dua.
+Press '?' (while in `dua`) for help.
+</Aside>
