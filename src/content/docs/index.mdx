@@ -1,25 +1,68 @@
 ---
-title: RM6785 docs
+title: RM6785 Docs
+description: Idiot-proof guides for unlocking, flashing and maintaining RM6785 devices (realme 6 / 7 / Narzo series).
+template: splash
+hero:
+  tagline: Idiot-proof guides for unlocking, flashing and maintaining your realme 6 / 7 / Narzo series device.
+  image:
+    file: ../../assets/rm6785.png
+  actions:
+    - text: Quick Start Guide
+      link: guides/10_bootloader_unlock
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/realme-mt6785-devs/realme-mt6785-devs.github.io
+      icon: external
+      variant: minimal
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+import { Card, CardGrid, LinkCard, Aside } from '@astrojs/starlight/components';
 
-## Beginner's Quick Start Guide
+## Start here
 
-Check out [bootloader unlock and recovery guide](guides/10_bootloader_unlock).
-Most of the guides are adapted from the one written by [Sid](https://t.me/Sid_Fr_T).
-I adapted it so that it becomes idiot-proof.
+<CardGrid>
+  <LinkCard
+    title="Bootloader Unlock & Recovery"
+    description="Unlock your bootloader with mtkclient, enable fastboot and flash a custom recovery."
+    href="guides/10_bootloader_unlock"
+  />
+  <LinkCard
+    title="Installing ROMs"
+    description="Clean vs. dirty flash, and how to install a custom ROM the right way."
+    href="guides/27_installing_roms"
+  />
+  <LinkCard
+    title="Flashing a Kernel"
+    description="Two ways to flash a custom kernel onto your device."
+    href="guides/34_flash_kernel"
+  />
+  <LinkCard
+    title="Troubleshooting"
+    description="Stuck? Fixes for handshake failures and missing RUI 2.0 updates."
+    href="troubleshooting/handshake_failed"
+  />
+</CardGrid>
 
-## Support Groups and Channel
+Most of the guides are adapted from the one written by [Sid](https://t.me/Sid_Fr_T) —
+reworked here to be as idiot-proof as possible.
 
-- [RM6785 Updates (channel)](https://t.me/rm6785)
-- [realme 6 Group](https://t.me/RM6Official)
-- RM6785
-  * [RM6785 Community](https://t.me/rm6785Official)
-  * [RM6785 Chat](https://t.me/RM6785_Chat)
+## Support Groups & Channel
+
+<CardGrid>
+  <Card title="Channel" icon="comment">
+    - [RM6785 Updates](https://t.me/rm6785)
+  </Card>
+  <Card title="realme 6" icon="phone">
+    - [realme 6 Group](https://t.me/RM6Official)
+  </Card>
+  <Card title="RM6785 Community" icon="rocket">
+    - [Community](https://t.me/rm6785Official)
+    - [Chat](https://t.me/RM6785_Chat)
+  </Card>
+</CardGrid>
 
 <Aside type="note">
 Any issues with the notes on this site? Open an issue in this
 [GitHub repo](https://github.com/realme-mt6785-devs/RM6785-docs.git).
 </Aside>
-

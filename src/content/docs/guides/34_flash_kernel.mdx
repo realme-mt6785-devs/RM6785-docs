@@ -2,27 +2,41 @@
 title: Kernel Flashing Guide
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
 
-## First Method
+<Tabs>
+  <TabItem label="First Method (recovery)">
+    <Steps>
 
-1. Download the kernel zip.
-1. Reboot to recovery. This assumes you have a working
-   custom recovery. Please visit [this section](../../appendix/recoveries)
-   for list of recoveries.
-1. Flash the kernel zip from the recovery, just like
-   how you flash a ROM.
+    1. Download the kernel zip.
 
-## Second Method
+    1. Reboot to recovery. This assumes you have a working
+       custom recovery. Please visit [this section](../../appendix/recoveries)
+       for list of recoveries.
 
-1. Donwload the kernel zip.
-1. Extract boot.img from the kernel zip.
-1. Boot the phone into bootloader (fastboot).
-1. flash the boot.img:
+    1. Flash the kernel zip from the recovery, just like
+       how you flash a ROM.
 
-```sh
-fastboot flash boot <drag and drop the boot.img>
-```
+    </Steps>
+  </TabItem>
+  <TabItem label="Second Method (fastboot)">
+    <Steps>
+
+    1. Download the kernel zip.
+
+    1. Extract boot.img from the kernel zip.
+
+    1. Boot the phone into bootloader (fastboot).
+
+    1. Flash the boot.img:
+
+       ```sh
+       fastboot flash boot <drag and drop the boot.img>
+       ```
+
+    </Steps>
+  </TabItem>
+</Tabs>
 
 <Aside type="note">
 This actually works for recovery as well. For the
@@ -31,4 +45,3 @@ This actually works for recovery as well. For the
 As for the **Second Method**, replace *boot* with *recovery*,
 and drag-and-drop the extracted recovery.img instead.
 </Aside>
-

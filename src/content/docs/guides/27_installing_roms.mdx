@@ -2,7 +2,7 @@
 title: ROM Installation Guide
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside, Steps } from '@astrojs/starlight/components';
 
 <Aside type="note">
 Before following this guide, make sure you've unlocked
@@ -41,6 +41,8 @@ to learn more.
 
 ## Performing a Clean Flash
 
+<Steps>
+
 1. Reboot to recovery.
 1. Wipe dalvik cache, cache and data.
 1. Flash the ROM (and GAPPS if necessary).
@@ -49,12 +51,18 @@ to learn more.
    on to why you should just use f2fs instead of ext4.
 1. Reboot to system and you're done.
 
+</Steps>
+
 ## Performing a Dirty Flash
+
+<Steps>
 
 1. Reboot to recovery.
 1. Flash the ROM (and GAPPS if necessary).
 1. Wipe cache and dalvik cache. **DO NOT** wipe data.
 1. Reboot to system.
+
+</Steps>
 
 ## Caveat
 

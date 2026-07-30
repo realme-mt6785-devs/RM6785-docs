@@ -2,6 +2,8 @@
 title: Storage Health Check
 ---
 
+import { Steps } from '@astrojs/starlight/components';
+
 There are two methods to do this.
 
 ## First method: WearLevelInsight app
@@ -11,17 +13,21 @@ Install it and give it root access.
 
 ## Second method: Manually via Termux
 
+<Steps>
+
 1. Enter root shell:
 
-```
-su
-```
+   ```
+   su
+   ```
 
-2. Run this:
+1. Run this:
 
-```
-cat /sys/devices/platform/bootdevice/health_descriptor/life_time_estimation_*
-```
+   ```
+   cat /sys/devices/platform/bootdevice/health_descriptor/life_time_estimation_*
+   ```
+
+</Steps>
 
 Here's what the output mean:
 

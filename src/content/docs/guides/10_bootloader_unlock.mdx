@@ -2,7 +2,7 @@
 title: Bootloader Unlock & Recovery Guide
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside, Steps } from '@astrojs/starlight/components';
 
 <Aside type="caution">
 Please read every section thoroughly before doing anything to
@@ -18,6 +18,8 @@ to realme UI 2.0 via settings. If the update does not show
 up, follow [this troubleshooting steps](../../troubleshooting/rui2).
 </Aside>
 
+<Steps>
+
 1. Turn on developer options and enable OEM unlock.
 
 1. Download [mtkclient](https://t.me/rm6785dumppAss/1079). You
@@ -30,22 +32,25 @@ up, follow [this troubleshooting steps](../../troubleshooting/rui2).
    and connect it to the PC. DO NOT release the volume buttons
    until connection succeeds.
 
-<Aside type="tip">
-The volume key must be pressed BEFORE connecting it to the PC,
-and keep the key pressed while connecting it. Once it succeeds,
-the key may be released.
-</Aside>
+   <Aside type="tip">
+   The volume key must be pressed BEFORE connecting it to the PC,
+   and keep the key pressed while connecting it. Once it succeeds,
+   the key may be released.
+   </Aside>
 
-5. In mtkclient, go to 'Flash Tools' section and click
+1. In mtkclient, go to 'Flash Tools' section and click
    'Unlock Bootloader' button.
 
 1. Go to 'Erase Partition' section and erase the following
    partitions:
+
    ```
    md_udc
    metadata
    userdata
    ```
+
+</Steps>
 
 <Aside type="danger">
 Step 5 & 6 will ERASE YOUR DATA. Make a backup before proceeding.
@@ -75,23 +80,27 @@ you're a beginner._
 
 ### Steps for flashing lk
 
+<Steps>
+
 1. Open mtk gui 2.0 and do not close it.
 
 1. Power off your phone. Press vol up and vol down simultaneously
    and connect it to the PC. DO NOT release the volume buttons
    until connection succeeds.
 
-<Aside type="tip">
-The volume key must be pressed BEFORE connecting it to the PC,
-and keep the key pressed while connecting it. Once it succeeds,
-the key may be released.
-</Aside>
+   <Aside type="tip">
+   The volume key must be pressed BEFORE connecting it to the PC,
+   and keep the key pressed while connecting it. Once it succeeds,
+   the key may be released.
+   </Aside>
 
-3. Go to 'Write Partition' section. Set the downloaded lk file
+1. Go to 'Write Partition' section. Set the downloaded lk file
    for lk partition and flash. Do not touch lk2.
 
 1. Disconnect cable and hold all buttons until fastboot appears.
    You can now flash recovery you wish to use.
+
+</Steps>
 
 ## Flashing Recovery
 
@@ -100,6 +109,8 @@ For a list of recoveries and their link, check out
 
 ### Recovery flashing guide
 
+<Steps>
+
 1. Boot to fastboot. Power off phone and hold all
    three buttons until fastboot appears.
 
@@ -107,17 +118,19 @@ For a list of recoveries and their link, check out
 
 1. Now the flashing part:
 
-```
-fastboot flash recovery <drag and drop recovery file>
-```
+   ```
+   fastboot flash recovery <drag and drop recovery file>
+   ```
 
-4. Reboot into recovery:
+1. Reboot into recovery:
 
-```
-fastboot reboot recovery
-```
+   ```
+   fastboot reboot recovery
+   ```
 
-5. Now you can flash whatever you want to.
+1. Now you can flash whatever you want to.
+
+</Steps>
 
 <Aside type="tip">
 If you do nothing in recovery and reboot back into
@@ -125,4 +138,3 @@ realme UI, your custom recovery will be overwritten
 and it will become realme UI recovery again. You will
 need to repeat the process all over again.
 </Aside>
-
