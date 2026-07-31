@@ -1,32 +1,8 @@
-@import '@fontsource/noto-serif-grantha';
+@import '@fontsource-variable/merriweather';
 
 :root {
-  --sl-font: 'Noto Serif Grantha', serif;
-  --sl-font-mono: monospace, ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo,
-    Consolas, 'DejaVu Sans Mono', monospace;
-}
+  --sl-font: 'Merriweather Variable', serif;
+  --sl-font-mono: monospace, ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
 
-:root {
-  --sl-color-accent-low: #3a2c00;
-  --sl-color-accent: #a98600;
-  --sl-color-accent-high: #f0d98a;
-}
-
-:root[data-theme='light'] {
-  --sl-color-accent-low: #f7ead0;
-  --sl-color-accent: #9a6a00;
-  --sl-color-accent-high: #4a3400;
-}
-
-.expressive-code .frame,
-.sl-markdown-content :not(pre) > code {
-  border-radius: 0.5rem;
-}
-
-.card {
-  border-radius: 0.75rem;
-}
-
-.hero img {
-  filter: drop-shadow(0 12px 24px rgb(0 0 0 / 0.18));
+  --sidebar-width: 25rem;
 }

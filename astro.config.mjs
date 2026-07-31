@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import lucode from 'lucode-starlight';
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,15 +12,19 @@ export default defineConfig({
       title: 'RM6785 Docs',
       social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/realme-mt6785-devs/realme-mt6785-devs.github.io' }],
       favicon: '/favicon.jpg',
+      logo: {
+        src: './src/assets/rm6785.png',
+        replacesTitle: true,
+      },
       customCss: ['./src/styles/custom.css'],
       sidebar: [
-        {
-          label: 'Main',
-          items: [
-            // Each item here is one entry in the navigation menu.
-            { label: 'Main Page', slug: 'index' },
-          ],
-        },
+        // {
+        //   label: 'Main',
+        //   items: [
+        //     // Each item here is one entry in the navigation menu.
+        //     { label: 'Main Page', slug: 'index' },
+        //   ],
+        // },
         {
           label: 'Guides',
           items: [{ autogenerate: { directory: 'guides' } }],
@@ -32,6 +37,25 @@ export default defineConfig({
           label: 'Appendix',
           items: [{ autogenerate: { directory: 'appendix' } }],
         },
+      ],
+      plugins: [
+        lucode({
+          navLinks: [
+            {
+              label: 'Guides',
+              link: '/guides/10_bootloader_unlock/',
+            },
+            {
+              label: 'Troubleshooting',
+              link: '/troubleshooting/handshake_failed/',
+            },
+            {
+              label: 'Appendix',
+              link: '/appendix/decrypted_ofps/',
+            },
+          ],
+          footerText: 'Found any issues with the notes on this site? Open an issue in this [GitHub repo](https://github.com/realme-mt6785-devs/RM6785-docs.git). Or even better, make a pull request or let us know if you want to be the maintainer of this site because we are short of maintainers.',
+        }),
       ],
     }),
   ],
