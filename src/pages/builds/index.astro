@@ -18,14 +18,14 @@ const counts = {
 <StarlightPage
 	frontmatter={{
 		title: 'Builds',
-		description: `Every ROM, recovery and kernel announced in @RM6785 — ${builds.length} builds on record across ${projects.length} projects.`,
+		description: `Every ROM, recovery and kernel announced in @RM6785. There are ${builds.length} builds on record across ${projects.length} projects.`,
 		tableOfContents: false,
 	}}
 >
 	<p>
 		Every build announced in <a href="https://t.me/RM6785">@RM6785</a>, kept as a permanent record
-		rather than living only as a channel message. {builds.length} builds across {projects.length} projects
-		— <a href={buildsHref(TYPE_SLUGS.rom)}>{counts.rom} ROMs</a>,
+		rather than living only as a channel message. {builds.length} builds across {projects.length} projects,
+		that is<a href={buildsHref(TYPE_SLUGS.rom)}>{counts.rom} ROMs</a>,
 		<a href={buildsHref(TYPE_SLUGS.recovery)}>{counts.recovery} recoveries</a> and
 		<a href={buildsHref(TYPE_SLUGS.kernel)}>{counts.kernel} kernels</a>.
 	</p>
