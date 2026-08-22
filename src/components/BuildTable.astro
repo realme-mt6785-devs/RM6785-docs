@@ -1,0 +1,213 @@
+---
+import { buildsHref, type Build, type Facets } from '../lib/builds';
+
+interface Props {
+	builds: Build[];
+	facets: Facets;
+	/** Hidden when a page has already filtered to one kind of build. */
+	showType?: boolean;
+}
+
+const { builds, facets, showType = true } = Astro.props;
+
+const DEVICE_LABEL: Record<string, string> = {
+	RM6785: 'All devices',
+	nemo: 'Realme 6 family',
+	salaa: 'Realme 7 family',
+};
+
+const TYPE_LABEL: Record<string, string> = {
+	rom: 'ROM',
+	recovery: 'Recovery',
+	kernel: 'Kernel',
+};
+
+/** Raw device name is kept in the haystack so searching "RMX2001" still works. */
+const haystack = (build: Build): string =>
+	[build.data.name, build.data.tag, build.data.author, build.data.device, build.family]
+		.join(' ')
+		.toLowerCase();
+---
+
+<div class="build-table not-content">
+	<div class="filters">
+		<label class="search">
+			<span class="sr-only">Search builds</span>
+			<input type="search" id="bt-search" placeholder="Search name, project or author…" />
+		</label>
+
+		<label>
+			<span class="sr-only">Device</span>
+			<select id="bt-device">
+				<option value="">Any device</option>
+				{
+					facets.devices.map((device) => (
+						<option value={device}>{DEVICE_LABEL[device] ?? device}</option>
+					))
+				}
+			</select>
+		</label>
+
+		<label>
+			<span class="sr-only">Android version</span>
+			<select id="bt-android">
+				<option value="">Any Android</option>
+				{facets.androids.map((major) => <option value={major}>Android {major}</option>)}
+			</select>
+		</label>
+
+		{
+			showType && (
+				<label>
+					<span class="sr-only">Build type</span>
+					<select id="bt-type">
+						<option value="">Any type</option>
+						{facets.types.map((type) => <option value={type}>{TYPE_LABEL[type] ?? type}</option>)}
+					</select>
+				</label>
+			)
+		}
+	</div>
+
+	<p class="count" id="bt-count" aria-live="polite">{builds.length} builds</p>
+
+	<table>
+		<thead>
+			<tr>
+				<th scope="col">Build</th>
+				<th scope="col">Device</th>
+				<th scope="col">Android</th>
+				<th scope="col">Date</th>
+				<th scope="col">Size</th>
+			</tr>
+		</thead>
+		<tbody>
+			{
+				builds.map((build) => (
+					<tr
+						data-device={build.family}
+						data-android={build.android}
+						data-type={build.data.postType}
+						data-search={haystack(build)}
+					>
+						<td>
+							<a href={buildsHref(build.slug)}>{build.data.name}</a>
+							<span class="meta">
+								{TYPE_LABEL[build.data.postType]} · {build.data.stability}
+								{build.data.releaseType ? ` · ${build.data.releaseType}` : ''}
+							</span>
+						</td>
+						<td>{DEVICE_LABEL[build.family] ?? build.family}</td>
+						<td>{build.data.androidVersion ?? '—'}</td>
+						<td>
+							<time datetime={build.date}>{build.displayDate}</time>
+						</td>
+						<td>{build.data.download.fileSize ?? '—'}</td>
+					</tr>
+				))
+			}
+		</tbody>
+	</table>
+
+	<p class="empty" id="bt-empty" hidden>Nothing matches those filters.</p>
+</div>
+
+<script>
+	const root = document.querySelector<HTMLElement>('.build-table');
+	if (root) {
+		const search = root.querySelector<HTMLInputElement>('#bt-search');
+		const selects = ['bt-device', 'bt-android', 'bt-type']
+			.map((id) => root.querySelector<HTMLSelectElement>(`#${id}`))
+			.filter((element): element is HTMLSelectElement => element !== null);
+		const rows = [...root.querySelectorAll<HTMLTableRowElement>('tbody tr')];
+		const count = root.querySelector<HTMLElement>('#bt-count');
+		const empty = root.querySelector<HTMLElement>('#bt-empty');
+
+		const apply = () => {
+			const term = (search?.value ?? '').trim().toLowerCase();
+			let shown = 0;
+
+			for (const row of rows) {
+				const matches =
+					(!term || (row.dataset.search ?? '').includes(term)) &&
+					selects.every((select) => {
+						if (!select.value) return true;
+						const key = select.id.replace('bt-', '');
+						return row.dataset[key] === select.value;
+					});
+
+				row.hidden = !matches;
+				if (matches) shown++;
+			}
+
+			if (count) count.textContent = `${shown} build${shown === 1 ? '' : 's'}`;
+			if (empty) empty.hidden = shown > 0;
+		};
+
+		// Deep links like /builds/?device=salaa preselect a filter.
+		const params = new URLSearchParams(location.search);
+		for (const select of selects) {
+			const value = params.get(select.id.replace('bt-', ''));
+			if (value && [...select.options].some((option) => option.value === value)) {
+				select.value = value;
+			}
+			select.addEventListener('change', apply);
+		}
+		search?.addEventListener('input', apply);
+		apply();
+	}
+</script>
+
+<style>
+	.build-table .filters {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-block-end: 1rem;
+	}
+	.build-table .search {
+		flex: 1 1 16rem;
+	}
+	.build-table input,
+	.build-table select {
+		width: 100%;
+		padding: 0.4rem 0.6rem;
+		font: inherit;
+		font-size: var(--sl-text-sm);
+		color: var(--sl-color-white);
+		background: var(--sl-color-black);
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.25rem;
+	}
+	.build-table .count,
+	.build-table .empty {
+		font-size: var(--sl-text-sm);
+		color: var(--sl-color-gray-3);
+	}
+	.build-table table {
+		width: 100%;
+		font-size: var(--sl-text-sm);
+		border-collapse: collapse;
+	}
+	.build-table th,
+	.build-table td {
+		padding: 0.5rem 0.6rem;
+		text-align: start;
+		vertical-align: baseline;
+		border-block-end: 1px solid var(--sl-color-gray-6);
+	}
+	.build-table th {
+		font-size: var(--sl-text-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--sl-color-gray-3);
+	}
+	.build-table td .meta {
+		display: block;
+		font-size: var(--sl-text-xs);
+		color: var(--sl-color-gray-3);
+	}
+	.build-table tr[hidden] {
+		display: none;
+	}
+</style>

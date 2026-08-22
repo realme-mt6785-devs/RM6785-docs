@@ -1,0 +1,70 @@
+---
+import type { GetStaticPaths } from 'astro';
+import type { PostType } from '../../../vendor/tooling/src/types';
+
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+
+import BuildTable from '../../components/BuildTable.astro';
+import { buildsHref, facetsOf, groupByProject, loadBuilds, TYPE_SLUGS, type Build } from '../../lib/builds';
+
+/**
+ * `/builds/<slug>/` is either one of the three type indexes or a project page.
+ * They share a URL shape, so they share a route — `assertNoReservedTags` in
+ * src/lib/builds.ts fails the build if a project ever claims a type slug.
+ */
+export const getStaticPaths = (async () => {
+	const builds = await loadBuilds();
+	const TITLES: Record<string, string> = {
+		roms: 'ROMs',
+		recoveries: 'Recoveries',
+		kernels: 'Kernels',
+	};
+
+	const typePages = Object.entries(TYPE_SLUGS).map(([type, slug]) => ({
+		params: { slug },
+		props: {
+			kind: 'type' as const,
+			title: TITLES[slug] ?? slug,
+			builds: builds.filter((build) => build.data.postType === (type as PostType)),
+		},
+	}));
+
+	const projectPages = groupByProject(builds).map((project) => ({
+		params: { slug: project.slug },
+		props: { kind: 'project' as const, title: project.name, builds: project.builds },
+	}));
+
+	return [...typePages, ...projectPages];
+}) satisfies GetStaticPaths;
+
+const { kind, title, builds } = Astro.props;
+const facets = facetsOf(builds);
+const newest: Build | undefined = builds[0];
+const plural = builds.length === 1 ? '' : 's';
+---
+
+<StarlightPage
+	frontmatter={{
+		title,
+		description:
+			kind === 'project'
+				? `${builds.length} ${title} build${plural} announced in @RM6785, newest first.`
+				: `Every ${title.toLowerCase()} build announced in @RM6785.`,
+		tableOfContents: false,
+	}}
+>
+	<p>
+		{builds.length} build{plural}, newest first.{' '}
+		{
+			newest && (
+				<Fragment>
+					Most recent is <a href={buildsHref(newest.slug)}>{newest.data.name}</a>, from{' '}
+					<time datetime={newest.date}>{newest.displayDate}</time>.{' '}
+				</Fragment>
+			)
+		}
+		<a href={buildsHref()}>See all builds</a>.
+	</p>
+
+	<BuildTable builds={builds} facets={facets} showType={kind !== 'type'} />
+</StarlightPage>
