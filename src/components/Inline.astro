@@ -1,0 +1,25 @@
+---
+import { inlineSegments } from '../lib/builds';
+
+interface Props {
+	/** Raw field text, which may carry [links](url), **bold** and *italic*. */
+	value: string;
+}
+
+const { value } = Astro.props;
+const segments = inlineSegments(value);
+---
+
+{
+	segments.map((segment) => {
+		const italicised = segment.italic ? <em>{segment.text}</em> : segment.text;
+		const styled = segment.bold ? <strong>{italicised}</strong> : italicised;
+		return segment.url ? (
+			<a href={segment.url} rel="noopener nofollow">
+				{styled}
+			</a>
+		) : (
+			styled
+		);
+	})
+}

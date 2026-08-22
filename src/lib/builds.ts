@@ -2,7 +2,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 
 import { RENAMED_DEVICE } from '../../vendor/tooling/src/devices';
 import { androidMajor, displayDate, hashtags, titleLine } from '../../vendor/tooling/src/fields';
-import { inlineSegments, type InlineSegment } from '../../vendor/tooling/src/inline';
+import { inlineSegments, visibleText, type InlineSegment } from '../../vendor/tooling/src/inline';
 import type { Device, Post, PostType } from '../../vendor/tooling/src/types';
 
 export type BuildEntry = CollectionEntry<'builds'>;
@@ -170,4 +170,4 @@ export const buildsHref = (...segments: string[]): string => {
 };
 
 export type { InlineSegment };
-export { inlineSegments };
+export { inlineSegments, visibleText };

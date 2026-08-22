@@ -1,0 +1,256 @@
+---
+import type { GetStaticPaths } from 'astro';
+
+import { Aside } from '@astrojs/starlight/components';
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+
+import Inline from '../../../components/Inline.astro';
+import { buildsHref, loadBuilds, TYPE_SLUGS, visibleText } from '../../../lib/builds';
+
+export const getStaticPaths = (async () => {
+	const builds = await loadBuilds();
+
+	return builds.map((entry) => {
+		const [project, ...rest] = entry.slug.split('/');
+		return { params: { project: project!, build: rest.join('/') }, props: { entry } };
+	});
+}) satisfies GetStaticPaths;
+
+const { entry } = Astro.props;
+const { data } = entry;
+
+const TYPE_NAME = { rom: 'ROM', recovery: 'Recovery', kernel: 'Kernel' } as const;
+
+/** Mirrors the order the channel post uses: info, changelog, bugs, notes. */
+const info: [string, string][] = [
+	['Author', data.author],
+	...(data.androidVersion
+		? ([['Android version', data.androidVersion]] as [string, string][])
+		: []),
+	...(data.kernelVersion ? ([['Kernel version', data.kernelVersion]] as [string, string][]) : []),
+	['Build date', entry.displayDate],
+];
+
+const sections = [
+	{ id: 'changelog', title: 'Changelog', items: data.changelog },
+	{ id: 'bugs', title: 'Bugs', items: data.bugs },
+	...(data.notes?.length ? [{ id: 'notes', title: 'Notes', items: data.notes }] : []),
+];
+
+const footer = (
+	[
+		['Sources', data.links.sources],
+		['Screenshots', data.links.screenshots],
+		['Support group', data.links.supportGroup],
+		['Donate', data.links.donate],
+	] as [string, string | undefined][]
+).filter((pair): pair is [string, string] => Boolean(pair[1]));
+
+const headings = [
+	...sections.map((section) => ({ depth: 2, slug: section.id, text: section.title })),
+	{ depth: 2, slug: 'downloads', text: 'Downloads' },
+	...(footer.length ? [{ depth: 2, slug: 'links', text: 'Links' }] : []),
+];
+
+/**
+ * Hashtags are clickable in Telegram, so they stay clickable here — pointing at
+ * whichever filtered view corresponds. Release type and RealmeUI have no view of
+ * their own, so those render as plain chips.
+ */
+const chipHref = (tag: string): string | null => {
+	if (tag === data.tag) return buildsHref(entry.project);
+
+	const typeSlug = { ROM: TYPE_SLUGS.rom, RECOVERY: TYPE_SLUGS.recovery, KERNEL: TYPE_SLUGS.kernel }[
+		tag
+	];
+	if (typeSlug) return buildsHref(typeSlug);
+	if (tag === data.device) return `${buildsHref()}?device=${entry.family}`;
+	if (entry.android && tag === `A${entry.android}`) {
+		return `${buildsHref()}?android=${entry.android}`;
+	}
+	return null;
+};
+
+const siblings = (await loadBuilds()).filter((other) => other.project === entry.project);
+---
+
+<StarlightPage
+	frontmatter={{
+		title: entry.title,
+		description: `${TYPE_NAME[data.postType]} for ${data.device}, built ${entry.displayDate} by ${visibleText(data.author)}.`,
+	}}
+	headings={headings}
+>
+	<div class="build-post">
+		{
+			entry.banner ? (
+				<img class="banner" src={entry.banner} alt={`${data.name} banner`} loading="lazy" />
+			) : (
+				<Aside type="note" title="No banner for this build">
+					This post was archived from the channel before this site existed, so its banner only
+					exists inside Telegram.{' '}
+					{entry.original ? (
+						<a href={entry.original}>See the original post</a>
+					) : (
+						'The original message could not be identified.'
+					)}
+				</Aside>
+			)
+		}
+
+		<p class="chips not-content">
+			{
+				entry.tags.map((tag) => {
+					const href = chipHref(tag);
+					return href ? (
+						<a class="chip" href={href}>
+							#{tag}
+						</a>
+					) : (
+						<span class="chip">#{tag}</span>
+					);
+				})
+			}
+		</p>
+
+		<dl class="info not-content">
+			{
+				info.map(([label, value]) => (
+					<div>
+						<dt>{label}</dt>
+						<dd>
+							<Inline value={value} />
+						</dd>
+					</div>
+				))
+			}
+		</dl>
+
+		{
+			sections.map((section) => (
+				<Fragment>
+					<h2 id={section.id}>{section.title}</h2>
+					<ul>
+						{section.items.map((item) => (
+							<li>
+								<Inline value={item} />
+							</li>
+						))}
+					</ul>
+				</Fragment>
+			))
+		}
+
+		<h2 id="downloads">Downloads</h2>
+		<ul>
+			{
+				data.download.buildType && (
+					<li>
+						Build type: <Inline value={data.download.buildType} />
+					</li>
+				)
+			}
+			{data.download.fileSize && <li>File size: {data.download.fileSize}</li>}
+		</ul>
+		<p>
+			<a class="download" href={data.download.url} rel="noopener nofollow">
+				Download {data.name}
+			</a>
+		</p>
+
+		{
+			footer.length > 0 && (
+				<Fragment>
+					<h2 id="links">Links</h2>
+					<ul>
+						{footer.map(([label, url]) => (
+							<li>
+								<a href={url} rel="noopener nofollow">
+									{label}
+								</a>
+							</li>
+						))}
+					</ul>
+				</Fragment>
+			)
+		}
+
+		<p class="footnote">
+			{TYPE_NAME[data.postType]} · {data.stability}
+			{data.releaseType ? ` · ${data.releaseType}` : ''} · RealmeUI {data.ruiVersion} ·{' '}
+			<a href={buildsHref(entry.project)}>
+				{siblings.length} {data.tag} build{siblings.length === 1 ? '' : 's'}
+			</a>
+			{entry.original ? <Fragment> · <a href={entry.original}>Original channel post</a></Fragment> : ''}
+		</p>
+	</div>
+</StarlightPage>
+
+<style>
+	/*
+	 * Telegram renders its rich-post h1 at about 1.35x body and h2 at about 1.2x.
+	 * Starlight's h2 is 29px against a 16px body, which is roughly 1.5x too large
+	 * for a post this shape. The level stays h2 so the heading outline and the
+	 * table of contents still work; only the size comes down.
+	 */
+	.build-post h2 {
+		font-size: var(--sl-text-xl);
+		margin-block-start: 1.5rem;
+	}
+
+	.build-post .banner {
+		width: 100%;
+		border-radius: 0.5rem;
+	}
+
+	.build-post .chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem;
+	}
+	.build-post .chip {
+		padding: 0.1rem 0.5rem;
+		font-size: var(--sl-text-xs);
+		color: var(--sl-color-gray-2);
+		background: var(--sl-color-gray-6);
+		border-radius: 1rem;
+		text-decoration: none;
+	}
+	.build-post a.chip:hover {
+		color: var(--sl-color-white);
+		background: var(--sl-color-gray-5);
+	}
+
+	.build-post .info {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem 1.5rem;
+		margin-block: 1rem;
+	}
+	.build-post .info dt {
+		font-size: var(--sl-text-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--sl-color-gray-3);
+	}
+	.build-post .info dd {
+		margin: 0;
+		font-size: var(--sl-text-sm);
+	}
+
+	.build-post .download {
+		display: inline-block;
+		padding: 0.5rem 1.25rem;
+		font-weight: 600;
+		color: var(--sl-color-black);
+		background: var(--sl-color-white);
+		border-radius: 0.25rem;
+		text-decoration: none;
+	}
+
+	.build-post .footnote {
+		margin-block-start: 2rem;
+		font-size: var(--sl-text-sm);
+		color: var(--sl-color-gray-3);
+	}
+</style>
