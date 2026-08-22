@@ -7,6 +7,13 @@ on:
     branches: [ main ]
   # Allows you to run this workflow manually from the Actions tab on GitHub.
   workflow_dispatch:
+  # Fired by RM6785-ROM-post once a build has been published, so a new post
+  # reaches the site without waiting for the nightly run.
+  repository_dispatch:
+    types: [records-updated]
+  # Backstop, in case a dispatch is missed or the token expires.
+  schedule:
+    - cron: '41 4 * * *'
 
 # Allow this job to clone the repo and create a page deployment
 permissions:
@@ -20,6 +27,15 @@ jobs:
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v5
+        with:
+          submodules: recursive
+
+      # The committed submodule pointers are a floor for local development, not
+      # the published state: production always builds the current tip of each
+      # branch, so a new record needs no bump commit here.
+      - name: Update the vendored records and tooling to their branch tips
+        run: git submodule update --remote --recursive
+
       - name: Install, build, and upload your site
         uses: withastro/action@v5
 
