@@ -33,8 +33,19 @@ jobs:
       # The committed submodule pointers are a floor for local development, not
       # the published state: production always builds the current tip of each
       # branch, so a new record needs no bump commit here.
+      #
+      # Not `git submodule update --remote`, which needs a remote-tracking ref
+      # for each submodule's configured branch. actions/checkout only fetches the
+      # commit a pointer names, so origin/tooling never exists — origin/main only
+      # works by accident, being that repository's default branch. Fetch the
+      # branch named in .gitmodules instead.
       - name: Update the vendored records and tooling to their branch tips
-        run: git submodule update --remote --recursive
+        run: |
+          git submodule foreach '
+            branch=$(git config -f "$toplevel/.gitmodules" "submodule.$name.branch" || true)
+            git fetch --depth=1 origin "${branch:-HEAD}"
+            git checkout --quiet FETCH_HEAD
+          '
 
       - name: Install, build, and upload your site
         uses: withastro/action@v5
