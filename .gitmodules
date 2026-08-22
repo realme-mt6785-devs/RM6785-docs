@@ -1,0 +1,8 @@
+[submodule "vendor/records"]
+	path = vendor/records
+	url = https://github.com/realme-mt6785-devs/RM6785-ROM-post.git
+	branch = main
+[submodule "vendor/tooling"]
+	path = vendor/tooling
+	url = https://github.com/realme-mt6785-devs/RM6785-ROM-post.git
+	branch = tooling
