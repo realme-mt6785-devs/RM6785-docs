@@ -1,0 +1,59 @@
+---
+title: Requesting a ROM Post
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+ROMs of this devices are posted in the Telegram channel, alongside this site
+ROMs [index](../../builds). To request your ROM to be posted, Please follow
+this guide carefully.
+
+1. Go to this [ROM post](https://github.com/realme-mt6785-devs/RM6785-ROM-post)
+repo, where we archive all of the existing RM6785 ROM posts.
+
+2. Go to the issues tab, and create new issue. You will be presented with a
+list of template to choose from.
+   
+   <figure> <img src="https://i.ibb.co/kgrntSMk/image.png" alt="The list of
+   options to choose from" border="0"/> <figcaption style="color: grey">The
+   list of options to choose from</figcaption> </figure>
+
+3. Select "Post a build". Give it an appropriate title, such as the ROM you're posting.
+
+4. Next, you need to provide a JSON containing the data of the post. If you are
+automating this with a script, use the
+[schema](https://github.com/realme-mt6785-devs/RM6785-ROM-post/blob/tooling/schema/post.schema.json)
+that we provide. Otherwise, if you're writing the JSON by hand, you may refer
+to the examples that we have,
+
+   - [ROM](https://github.com/realme-mt6785-devs/RM6785-ROM-post/blob/tooling/examples/rom.json)
+   - [recovery](https://github.com/realme-mt6785-devs/RM6785-ROM-post/blob/tooling/examples/recovery.json)
+   - [kernel](https://github.com/realme-mt6785-devs/RM6785-ROM-post/blob/tooling/examples/kernel.json)
+
+   The more detailed instruction and table is available on the repo's
+   [readme](https://github.com/realme-mt6785-devs/RM6785-ROM-post/blob/main/README.md)
+   in the main branch.
+
+<Aside type="note">
+## Some Unimportant Fun Fact
+
+Before this system, we used to require people to make a post with a Telegram
+message that adheres to the channel format, manually. And then, we'd use a bot
+with a sophisticated (not really) and fragile parser to validate that the post
+do indeed adheres to our required format. Now, with this system, not only that
+the post is automatically made following the format we require, it also means
+we can archive the JSONs in a single repo, and use the JSONs to generate the
+[index](../../builds). This way, people without Telegram can still view the
+builds.
+
+This method of handling post request was suggested by Elohim, and it allows us
+not just to build the index, but it also means we don't have to endlessly
+invite everyone that wants to post into the release request group.
+
+Lastly, even before this, the post standardisation was already there, and it
+was thanks to Samar and Sundae. Thanks to the standardisation, we were able to
+generate JSONs of all the old ROMs automatically without needing to do it by
+hand because they all share the same format, which naturally allows us to write
+a singular parser for all of them and have all of the old ROMs show up on this
+site index.
+</Aside>
